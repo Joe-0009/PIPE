@@ -1,10 +1,10 @@
 #include <fcntl.h>
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/wait.h>
-# include <stdint.h>
+#include <unistd.h>
 
 void	*ft_memset(void *b, int c, size_t len)
 {
@@ -80,9 +80,15 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!str)
 		return (NULL);
 	if (s1)
+	{
 		ft_memcpy(str, s1, len1);
+		free(s1);
+	}
 	if (s2)
+	{
 		ft_memcpy(str + len1, s2, len2);
+		free(s2);
+	}
 	return (str);
 }
 
@@ -186,7 +192,6 @@ char	**ft_split(char *str, char *charset)
 	return (strs);
 }
 
-
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
 	size_t	i;
@@ -222,93 +227,159 @@ void	ft_error(char *str)
 void	check_args(int ac, char **av)
 {
 	if (ac != 5)
+	{
+		ft_error("arguments");
 		exit(EXIT_FAILURE);
+	}
 }
 
 // ./pipex file1 cmd1 cmd2 file2
 // PATH=/home/yrachidi/bin:/usr/local/sbin:/usr/local/bin
 //:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-int	main(int ac, char **av, char **envp)
+
+typedef struct s_pipex
 {
 	int		pipe_fd[2];
-		// fd[0] Read end
-		// fd[1] write end
 	pid_t	pid1;
 	pid_t	pid2;
 	int		fd_infile;
 	int		fd_outfile;
-	char **cmd1;
-	char **cmd2;
-	char *fullpath;
-	char **paths;
+	char	**cmd1;
+	char	**cmd2;
+	char	*fullpath;
+	char	**paths;
+	int		i;
+	char	*cmd_path;
+
+}			t_pipex;
+
+void	get_paths_cmds(char **av, char **envp, t_pipex *pipex)
+{
+	pipex->cmd1 = ft_split(av[2], " 	");
+	pipex->cmd2 = ft_split(av[3], " 	");
+	pipex->i = -1;
+	while (envp[++pipex->i])
+	{
+		if (ft_strnstr(envp[pipex->i], "PATH", 4))
+		{
+			pipex->fullpath = ft_strnstr(envp[pipex->i], "PATH", 4);
+			pipex->paths = ft_split(pipex->fullpath + 5, ":");
+			break ;
+		}
+	}
+}
+
+void	first_process(char **av, char **envp, t_pipex *pipex)
+{
+	close(pipex->pipe_fd[0]);
+	dup2(pipex->fd_infile, STDIN_FILENO);
+	close(pipex->fd_infile);
+	dup2(pipex->pipe_fd[1], STDOUT_FILENO);
+	close(pipex->pipe_fd[1]);
+	if (pipex->cmd1[0][0] == '/')
+	{
+		if (access(pipex->cmd1[0], X_OK) != -1)
+			execve(pipex->cmd1[0], pipex->cmd1, envp);
+		else
+			ft_error("access");
+	}
+	else
+	{
+		pipex->i = -1;
+		while (pipex->paths && pipex->paths[++pipex->i])
+		{
+			pipex->cmd_path = ft_strjoin(ft_strjoin(pipex->paths[pipex->i],
+						"/"), pipex->cmd1[0]);
+			if (access(pipex->cmd_path, X_OK) != -1)
+				execve(pipex->cmd_path, pipex->cmd1, envp);
+		}
+		ft_error("Command 1 not found");
+	}
+}
+
+void	second_process(char **av, char **envp, t_pipex *pipex)
+{
+	close(pipex->pipe_fd[1]);
+	pipex->fd_outfile = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	dup2(pipex->fd_outfile, STDOUT_FILENO);
+	close(pipex->fd_outfile);
+	dup2(pipex->pipe_fd[0], STDIN_FILENO);
+	close(pipex->pipe_fd[0]);
+	if (pipex->cmd2[0][0] == '/')
+	{
+		if (access(pipex->cmd2[0], X_OK) != -1)
+			execve(pipex->cmd2[0], pipex->cmd2, envp);
+		else
+			ft_error("access");
+	}
+	else
+	{
+		pipex->i = -1;
+		while (pipex->paths && pipex->paths[++pipex->i])
+		{
+			pipex->cmd_path = ft_strjoin(ft_strjoin(pipex->paths[pipex->i],
+						"/"), pipex->cmd2[0]);
+			if (access(pipex->cmd_path, X_OK) != -1)
+				execve(pipex->cmd_path, pipex->cmd2, envp);
+		}
+	}
+	ft_error("Command 2 not found");
+}
+void	after_execution(t_pipex *pipex)
+{
 	int i;
 
-	check_args(ac, av);
-	cmd1 = ft_split(av[2], " 	");
-	cmd2 = ft_split(av[3], " 	");
 	i = -1;
-	while (envp[++i])
+	if (pipex->pid1 == 0)
 	{
-		if (ft_strnstr(envp[i], "PATH", 4))
-		{
-			fullpath = ft_strnstr(envp[i], "PATH", 4);
-			paths = ft_split(fullpath + 5 , ":");
-			break;
-		}
+		free(pipex->cmd_path);
+		free(pipex->paths);
+		free(pipex->cmd1);
+		free(pipex->cmd2);
 	}
-	if (pipe(pipe_fd) == -1)
+	if (pipex->pid2 == 0)
+	{
+		free(pipex->cmd_path);
+		free(pipex->paths);
+		free(pipex->cmd1);
+		free(pipex->cmd2);
+	}	
+	close(pipex->pipe_fd[0]);
+	close(pipex->pipe_fd[1]);
+	waitpid(pipex->pid1, NULL, 0);
+	waitpid(pipex->pid2, NULL, 0);
+	close(pipex->fd_infile);
+	while(pipex->paths[++i])
+		free(pipex->paths[++i]);
+	free(pipex->paths);
+	free(pipex->cmd1);
+	free(pipex->cmd2);
+}
+int	main(int ac, char **av, char **envp)
+{
+	t_pipex	pipex;
+
+	check_args(ac, av);
+	get_paths_cmds(av, envp, &pipex);
+	if (pipe(pipex.pipe_fd) == -1)
 		ft_error("pipe");
-	fd_infile = open(av[1], O_RDONLY | O_CREAT, 0644);
-	if (fd_infile == -1)
+	pipex.fd_infile = open(av[1], O_RDONLY);
+	if (pipex.fd_infile == -1)
 		ft_error("open");
-	pid1 = fork();
-	if (pid1 == -1)
+	pipex.pid1 = fork();
+	if (pipex.pid1 == -1)
 		ft_error("fork");
-	if (pid1 == 0)
+	if (pipex.pid1 == 0)
+		first_process(av, envp, &pipex);
+	if (pipex.pid1 != 0)
 	{
-		close(pipe_fd[0]);
-		dup2(fd_infile, STDIN_FILENO);
-		close(fd_infile);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-		i = -1;
-		while (paths[++i])
-		{
-			if (access(ft_strjoin(ft_strjoin(paths[i], "/"), cmd1[0]), X_OK) != -1)
-				execve(ft_strjoin(ft_strjoin(paths[i], "/"), cmd1[0]), cmd1, envp);
-		}
-		printf("CMD not found");
-	}
-	if (pid1 != 0)
-	{
-		
-		pid2 = fork();
-		if (pid2 == -1)
+		pipex.pid2 = fork();
+		if (pipex.pid2 == -1)
 			ft_error("fork");
-		if (pid2 == 0)
-		{
-			close(pipe_fd[1]);
-			fd_outfile = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			dup2(fd_outfile, STDOUT_FILENO);
-			close(fd_outfile);
-			dup2(pipe_fd[0], STDIN_FILENO);
-			close(pipe_fd[0]);
-			i = -1;
-			while (paths[++i])
-			{
-				if (access(ft_strjoin(ft_strjoin(paths[i], "/"), cmd1[0]), X_OK) != -1)
-					execve(ft_strjoin(ft_strjoin(paths[i], "/"), cmd1[0]), cmd1, envp);
-			}
-			printf("CMD not found");
-		}
+		if (pipex.pid2 == 0)
+			second_process(av, envp, &pipex);
 	}
-	if (pid1 != 0 && pid2 != 0)
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		waitpid(pid1, NULL, 0);
-		waitpid(pid2, NULL, 0);
-		close(fd_infile);
-	}
+	if (pipex.pid1 != 0 && pipex.pid2 != 0)
+		after_execution(&pipex);
 	exit(EXIT_SUCCESS);
 }
