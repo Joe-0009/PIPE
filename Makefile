@@ -13,7 +13,7 @@ OBJS = $(SRCS:.c=.o)
 
 all : $(NAME)
 
-$(NAME) : $(OBJS)
+$(NAME) : $(OBJS) pipex.h
 	$(CC) $(CFLAGS) $(OBJS) -o $@
 	
 clean : 

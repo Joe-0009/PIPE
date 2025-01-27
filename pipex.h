@@ -46,7 +46,8 @@ void		init_pipex(t_pipex *pipex);
 void		free_paths(char **paths);
 char		**ft_split(char *str, char *charset);
 char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
-char	*ft_strchr(const char *s, int i);
-size_t	ft_strlen(const char *s);
-char	*ft_strjoin(char *s1, char *s2);
+char		*ft_strchr(const char *s, int i);
+size_t		ft_strlen(const char *s);
+char		*ft_strjoin(char *s1, char *s2);
+ 
 #endif

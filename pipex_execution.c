@@ -27,6 +27,7 @@ void	first_process(char **av, char **envp, t_pipex *pipex)
 		if (access(pipex->cmd_path, X_OK) != -1)
 			execve(pipex->cmd_path, pipex->cmd1, envp);
 		free(pipex->cmd_path);
+		pipex->cmd_path = NULL;
 	}
 	exit_process(pipex, "Command 1 not found");
 }
@@ -58,6 +59,7 @@ void	second_process(char **av, char **envp, t_pipex *pipex)
 		if (access(pipex->cmd_path, X_OK) != -1)
 			execve(pipex->cmd_path, pipex->cmd2, envp);
 		free(pipex->cmd_path);
+		pipex->cmd_path = NULL;
 	}
 	exit_process(pipex, "Command 2 not found");
 }
