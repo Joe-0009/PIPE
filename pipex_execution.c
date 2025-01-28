@@ -18,7 +18,6 @@ void	first_process(char **av, char **envp, t_pipex *pipex)
 			execve(pipex->cmd1[0], pipex->cmd1, envp);
 		exit_process(pipex, "access");
 	}
-	
 	pipex->i = -1;
 	while (pipex->paths && pipex->paths[++pipex->i])
 	{
