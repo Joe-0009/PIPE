@@ -1,4 +1,3 @@
-
 #include "pipex.h"
 
 void	exit_process(t_pipex *pipex, char *error_msg)

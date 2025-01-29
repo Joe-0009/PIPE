@@ -48,6 +48,7 @@ void	*ft_calloc(size_t num_elements, size_t element_size)
 	ft_memset(ptr, 0, total_size);
 	return (ptr);
 }
+
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;

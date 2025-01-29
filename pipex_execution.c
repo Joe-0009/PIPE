@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-void	first_process(char **av, char **envp, t_pipex *pipex)
+static void	close_and_dup_first(char **av, t_pipex *pipex)
 {
 	close(pipex->pipe_fd[0]);
 	pipex->fd_infile = open(av[1], O_RDONLY);
@@ -10,6 +10,11 @@ void	first_process(char **av, char **envp, t_pipex *pipex)
 	close(pipex->fd_infile);
 	dup2(pipex->pipe_fd[1], STDOUT_FILENO);
 	close(pipex->pipe_fd[1]);
+}
+
+void	first_process(char **av, char **envp, t_pipex *pipex)
+{
+	close_and_dup_first(av, pipex);
 	if (!validate_command(pipex->cmd1))
 		exit_process(pipex, "Command 1 not found");
 	if (pipex->cmd1[0][0] == '/')
@@ -32,7 +37,7 @@ void	first_process(char **av, char **envp, t_pipex *pipex)
 	exit_process(pipex, "Command 1 not found");
 }
 
-void	second_process(char **av, char **envp, t_pipex *pipex)
+static void	close_and_dup_second(char **av, t_pipex *pipex)
 {
 	close(pipex->pipe_fd[1]);
 	pipex->fd_outfile = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -42,6 +47,11 @@ void	second_process(char **av, char **envp, t_pipex *pipex)
 	close(pipex->fd_outfile);
 	dup2(pipex->pipe_fd[0], STDIN_FILENO);
 	close(pipex->pipe_fd[0]);
+}
+
+void	second_process(char **av, char **envp, t_pipex *pipex)
+{
+	close_and_dup_second(av, pipex);
 	if (!validate_command(pipex->cmd2))
 		exit_process(pipex, "Command 2 not found");
 	if (pipex->cmd2[0][0] == '/')
