@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 13:36:51 by yrachidi          #+#    #+#             */
+/*   Updated: 2025/02/01 18:07:54 by yrachidi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 void	exit_process(t_pipex *pipex, char *error_msg)
 {
-	after_execution(pipex);
 	ft_error(error_msg);
+	after_execution(pipex);
 }
 
 void	get_paths_cmds(char **av, char **envp, t_pipex *pipex)

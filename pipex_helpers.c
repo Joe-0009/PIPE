@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_helpers.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 13:36:43 by yrachidi          #+#    #+#             */
+/*   Updated: 2025/02/01 18:38:01 by yrachidi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 void	ft_error(char *str)
@@ -9,8 +21,11 @@ void	ft_error(char *str)
 void	check_args(int ac, char **av)
 {
 	(void)av;
-	if (ac != 5)
-		ft_error("arguments");
+	if (ac != 5 || !*av[1] || !*av[2] || !*av[3] || !*av[4])
+	{
+		write(1,"Respect this : ./pipex file1 [cmd1] [cmd2] file2\n", 50);
+		exit(EXIT_FAILURE);
+	}
 }
 
 int	validate_command(char **cmd)

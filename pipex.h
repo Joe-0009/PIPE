@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 13:36:53 by yrachidi          #+#    #+#             */
+/*   Updated: 2025/01/31 13:37:06 by yrachidi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIPEX_H
 # define PIPEX_H
 
@@ -49,5 +61,5 @@ char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
 char		*ft_strchr(const char *s, int i);
 size_t		ft_strlen(const char *s);
 char		*ft_strjoin(char *s1, char *s2);
- 
+
 #endif
