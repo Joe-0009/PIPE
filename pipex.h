@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:53 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 11:04:41 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:12:10 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ void		get_paths_cmds(char **av, char **envp, t_pipex *pipex);
 void		init_pipex(t_pipex *pipex);
 void		free_paths(char **paths);
 void		exit_process(t_pipex *pipex, char *error_msg);
-int			validate_command(char **cmd);
+int			only_white_space(char **cmd);
 void		check_args(int ac, char **av);
 
 /* helpers */
 void		ft_error(char *str);
 void		check_args(int ac, char **av);
-int			validate_command(char **cmd);
+int			only_white_space(char **cmd);
 void		init_pipex(t_pipex *pipex);
 void		free_paths(char **paths);
 char		**ft_split(char *str, char *charset);

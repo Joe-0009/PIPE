@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:35 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/01/31 13:36:36 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:38:27 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,11 @@ char	**ft_split(char *str, char *charset)
 
 	i = 0;
 	strs = (char **)malloc(sizeof(char *) * (count_word(str, charset) + 1));
-	while (*str != '\0')
+	while (*str)
 	{
-		while (*str != '\0' && check_sep(*str, charset))
+		while (*str && check_sep(*str, charset))
 			str++;
-		if (*str != '\0')
+		if (*str)
 		{
 			strs[i] = ft_strdup(str, charset);
 			i++;

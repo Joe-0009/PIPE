@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:43 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 10:56:54 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:58:29 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ void	check_args(int ac, char **av)
 	}
 }
 
-int	validate_command(char **cmd)
+int	only_white_space(char **cmd)
 {
 	char	*ptr;
 
-	if (!cmd || !cmd[0])
+	if (!cmd || !cmd[0] || !*cmd[0])
 		return (0);
 	ptr = cmd[0];
 	while (*ptr)

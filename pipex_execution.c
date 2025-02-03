@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:38 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 12:56:30 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:59:13 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,18 @@ static void	close_and_dup_first(char **av, t_pipex *pipex)
 	close(pipex->fd_infile);
 	dup2(pipex->pipe_fd[1], STDOUT_FILENO);
 	close(pipex->pipe_fd[1]);
+	if (!only_white_space(pipex->cmd1))
+	{
+		write(2, av[2], ft_strlen(av[2]));
+		write(2, ": Command not found\n", 21);
+		after_execution(pipex);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	first_process(char **av, char **envp, t_pipex *pipex)
 {
 	close_and_dup_first(av, pipex);
-	if (!validate_command(pipex->cmd1))
-		exit_process(pipex, pipex->cmd1[0]);
 	if (is_path(pipex->cmd1[0]))
 	{
 		if (access(pipex->cmd1[0], X_OK) != -1)
@@ -49,7 +54,7 @@ void	first_process(char **av, char **envp, t_pipex *pipex)
 	write(2, pipex->cmd1[0], ft_strlen(pipex->cmd1[0]));
 	write(2, ": Command not found\n", 21);
 	after_execution(pipex);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 static void	close_and_dup_second(char **av, t_pipex *pipex)
@@ -62,13 +67,19 @@ static void	close_and_dup_second(char **av, t_pipex *pipex)
 	close(pipex->fd_outfile);
 	dup2(pipex->pipe_fd[0], STDIN_FILENO);
 	close(pipex->pipe_fd[0]);
+	printf("%d\n", only_white_space(pipex->cmd2));
+	if (!only_white_space(pipex->cmd2))
+	{
+		write(2, av[2], ft_strlen(av[3]));
+		write(2, ": Command not found\n", 21);
+		after_execution(pipex);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	second_process(char **av, char **envp, t_pipex *pipex)
 {
 	close_and_dup_second(av, pipex);
-	if (!validate_command(pipex->cmd2))
-		exit_process(pipex, pipex->cmd1[0]);
 	if (is_path(pipex->cmd2[0]))
 	{
 		if (access(pipex->cmd2[0], X_OK) != -1)
@@ -89,7 +100,7 @@ void	second_process(char **av, char **envp, t_pipex *pipex)
 	write(2, pipex->cmd2[0], ft_strlen(pipex->cmd2[0]));
 	write(2, ": Command not found\n", 21);
 	after_execution(pipex);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 void	after_execution(t_pipex *pipex)
