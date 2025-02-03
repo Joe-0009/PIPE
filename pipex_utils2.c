@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:48 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/01/31 13:36:49 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 09:44:40 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,15 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 		i++;
 	}
 	return (NULL);
+}
+
+int	is_path(char *cmd)
+{
+	while (*cmd)
+	{
+		if (*cmd == '/')
+			return (1);
+		cmd++;
+	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:38 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/02 20:06:31 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 10:13:16 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,6 @@ static void	close_and_dup_first(char **av, t_pipex *pipex)
 	close(pipex->fd_infile);
 	dup2(pipex->pipe_fd[1], STDOUT_FILENO);
 	close(pipex->pipe_fd[1]);
-}
-
-int	is_path(char *cmd)
-{
-	while (*cmd)
-	{
-		if (*cmd == '/')
-			return (1);
-		cmd++;
-	}
-	return (0);
 }
 
 void	first_process(char **av, char **envp, t_pipex *pipex)
@@ -84,7 +73,6 @@ void	second_process(char **av, char **envp, t_pipex *pipex)
 	{
 		if (access(pipex->cmd2[0], X_OK) != -1)
 			execve(pipex->cmd2[0], pipex->cmd2, envp);
-		// after_execution(pipex);
 		exit_process(pipex, pipex->cmd2[0]);
 	}
 	pipex->i = -1;
