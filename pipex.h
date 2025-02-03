@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:53 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 09:46:20 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 11:04:41 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ char		*ft_strchr(const char *s, int i);
 size_t		ft_strlen(const char *s);
 char		*ft_strjoin(char *s1, char *s2);
 int			is_path(char *cmd);
+void		reset_pipex(t_pipex *pipex);
 
 #endif

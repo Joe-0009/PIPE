@@ -6,16 +6,26 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:51 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 10:12:35 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 13:06:19 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+void	reset_pipex(t_pipex *pipex)
+{
+	pipex->cmd1 = NULL;
+	pipex->cmd2 = NULL;
+	pipex->paths = NULL;
+	pipex->fullpath = NULL;
+	pipex->cmd_path = NULL;
+}
+
 void	exit_process(t_pipex *pipex, char *error_msg)
 {
-	after_execution(pipex);
 	ft_error(error_msg);
+	after_execution(pipex);
+	exit(EXIT_FAILURE);
 }
 
 void	get_paths_cmds(char **av, char **envp, t_pipex *pipex)
@@ -33,7 +43,6 @@ void	get_paths_cmds(char **av, char **envp, t_pipex *pipex)
 			return ;
 		}
 	}
-	exit_process(pipex, "PATH not found in environment");
 }
 
 int	main(int ac, char **av, char **envp)

@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:43 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 10:48:15 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 10:56:54 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	ft_error(char *str)
 {
-	per0ror(str);
-	exit(EXIT_FAILURE);
+	perror(str);
 }
 
 void	check_args(int ac, char **av)

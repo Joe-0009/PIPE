@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:38 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 10:13:16 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/03 12:56:30 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	second_process(char **av, char **envp, t_pipex *pipex)
 {
 	close_and_dup_second(av, pipex);
 	if (!validate_command(pipex->cmd2))
-		exit_process(pipex, "Command 2 not found");
+		exit_process(pipex, pipex->cmd1[0]);
 	if (is_path(pipex->cmd2[0]))
 	{
 		if (access(pipex->cmd2[0], X_OK) != -1)
@@ -99,10 +99,7 @@ void	after_execution(t_pipex *pipex)
 	if (pipex->fd_outfile != -1)
 		close(pipex->fd_outfile);
 	if (pipex->cmd_path)
-	{
 		free(pipex->cmd_path);
-		pipex->cmd_path = NULL;
-	}
 	if (pipex->paths)
 		free_paths(pipex->paths);
 	if (pipex->cmd1)
@@ -117,4 +114,5 @@ void	after_execution(t_pipex *pipex)
 		waitpid(pipex->pid1, NULL, 0);
 	if (pipex->pid2)
 		waitpid(pipex->pid2, NULL, 0);
+	reset_pipex(pipex);
 }
