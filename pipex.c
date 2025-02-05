@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:51 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 20:47:18 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:27:26 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	exit_process(t_pipex *pipex, char *error_msg)
 
 void	get_paths_cmds(char **av, char **envp, t_pipex *pipex)
 {
-	if (!envp || !*envp)
-		exit_process(pipex, "no environment");
 	pipex->cmd1 = ft_split(av[2], " \t");
 	pipex->cmd2 = ft_split(av[3], " \t");
 	while (envp[++pipex->i])

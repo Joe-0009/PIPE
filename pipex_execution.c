@@ -6,7 +6,7 @@
 /*   By: yrachidi <yrachidi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:36:38 by yrachidi          #+#    #+#             */
-/*   Updated: 2025/02/03 21:59:13 by yrachidi         ###   ########.fr       */
+/*   Updated: 2025/02/04 10:58:44 by yrachidi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,9 @@ static void	close_and_dup_second(char **av, t_pipex *pipex)
 	close(pipex->fd_outfile);
 	dup2(pipex->pipe_fd[0], STDIN_FILENO);
 	close(pipex->pipe_fd[0]);
-	printf("%d\n", only_white_space(pipex->cmd2));
 	if (!only_white_space(pipex->cmd2))
 	{
-		write(2, av[2], ft_strlen(av[3]));
+		write(2, av[3], ft_strlen(av[3]));
 		write(2, ": Command not found\n", 21);
 		after_execution(pipex);
 		exit(EXIT_FAILURE);
